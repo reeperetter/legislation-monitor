@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Джерела</h2>
+<hr>
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">
+            Назва
+        </label>
+        <input
+            class="form-control"
+            name="name"
+            required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">
+            URL
+        </label>
+        <input
+            class="form-control"
+            name="base_url"
+            required>
+    </div>
+    <button class="btn btn-primary">
+        Додати
+    </button>
+</form>
+<hr>
+<table class="table table-striped">
+<thead>
+<tr>
+<th>ID</th>
+<th>Назва</th>
+<th>URL</th>
+<th>Активне</th>
+</tr>
+</thead>
+<tbody>
+{% for source in sources %}
+<tr>
+<td>{{ source.id }}</td>
+<td>{{ source.name }}</td>
+<td>{{ source.base_url }}</td>
+<td>{{ source.enabled }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

@@ -1,5 +1,6 @@
 from app.db.base import Base
 from app.db.session import engine
+from app.models.document import Document
 
 # Імпорт моделей ОБОВ'ЯЗКОВИЙ,
 # щоб SQLAlchemy "побачила" таблиці.

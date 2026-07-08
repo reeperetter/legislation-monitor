@@ -12,6 +12,7 @@ from app.models.role import Role
 from app.models.source import Source
 from app.models.keyword import Keyword
 from app.models.category import Category
+from app.models.document import Document
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

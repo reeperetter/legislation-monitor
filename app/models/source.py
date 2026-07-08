@@ -3,7 +3,7 @@ from sqlalchemy import String
 
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
-# from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 
@@ -31,11 +31,12 @@ class Source(Base):
         nullable=False,
     )
 
-    # documents = relationship(
-    #     "Document",
-    #     back_populates="source",
-    #     cascade="all, delete-orphan",
-    # )
+    documents = relationship(
+        "Document",
+        back_populates="source",
+        cascade="all, delete-orphan",
+    )
 
     def __repr__(self):
+
         return f"<Source {self.name}>"

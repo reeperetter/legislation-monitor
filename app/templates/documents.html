@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% block content %}
+<h2>Документи</h2>
+<hr />
+{% if documents %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Назва</th>
+            <th>Джерело</th>
+            <th>Оброблено</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for document in documents %}
+        <tr>
+            <td>{{ document.document_date or "-" }}</td>
+            <td>{{ document.title }}</td>
+            <td>{{ document.source.name }}</td>
+            <td>{% if document.processed %} ✅ {% else %} ❌ {% endif %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="alert alert-info">Документів поки немає.</div>
+{% endif %} {% endblock %}

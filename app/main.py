@@ -8,6 +8,7 @@ from app.core.config import settings
 from app.core.logger import logger
 from app.db.init_db import init_database
 from app.api.source_router import router as source_router
+from app.api.document_router import router as document_router
 
 
 @asynccontextmanager
@@ -26,6 +27,7 @@ app = FastAPI(
 )
 
 app.include_router(source_router)
+app.include_router(document_router)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 templates = Jinja2Templates(directory="app/templates")

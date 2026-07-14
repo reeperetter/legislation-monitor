@@ -5,8 +5,8 @@ class KMUParser(BaseParser):
 
     parser_name = "kmu"
 
-    async def fetch(self):
-        return []
+    base_url = "https://www.kmu.gov.ua"
 
-    async def parse(self, data):
+    async def parse(self, html):
+
         return []

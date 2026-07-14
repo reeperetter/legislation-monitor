@@ -4,11 +4,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-
-from app.monitoring.parser_manager import ParserManager
-
-from app.services.document_service import DocumentService
-from app.services.source_service import SourceService
+from app.services.monitoring_service import MonitoringService
 
 
 router = APIRouter()
@@ -20,18 +16,16 @@ async def monitor(
     db: Session = Depends(get_db),
 ):
 
-    parser = ParserManager.get(parser_name)
+    service = MonitoringService(db)
 
-    documents = await parser.run()
+    return await service.run_parser(parser_name)
 
-    source = SourceService(db).get_by_parser(parser_name)
 
-    if source is None:
-        raise ValueError(f"Source '{parser_name}' not found.")
+@router.post("/monitor")
+async def monitor_all(
+    db: Session = Depends(get_db),
+):
 
-    result = DocumentService(db).save_documents(
-        documents,
-        source.id,
-    )
+    service = MonitoringService(db)
 
-    return result
+    return await service.run_all()

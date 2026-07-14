@@ -1,11 +1,8 @@
+from app.parsers import load_parsers
 from app.parsers.base import BaseParser
 
-# Імпорт потрібен лише для автоматичної реєстрації
-import app.parsers.kmu
-import app.parsers.rada
-import app.parsers.president
-import app.parsers.minregion
-import app.parsers.diam
+
+load_parsers()
 
 
 class ParserManager:

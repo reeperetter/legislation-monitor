@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "change_me"
     DATABASE_URL: str = "sqlite:///legislation.db"
     LOG_LEVEL: str = "INFO"
-    
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore",

@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-
 from app.monitoring.parser_manager import ParserManager
 
 router = APIRouter(prefix="/parser", tags=["Parser"])
@@ -8,7 +7,6 @@ router = APIRouter(prefix="/parser", tags=["Parser"])
 
 @router.get("/available")
 async def available_parsers():
-
     return {
         "parsers": ParserManager.available()
     }
@@ -16,7 +14,6 @@ async def available_parsers():
 
 @router.get("/run/{parser_name}")
 async def run_parser(parser_name: str):
-
     try:
         parser = ParserManager.get(parser_name)
 

@@ -1,32 +1,27 @@
 from sqlalchemy.orm import Session
-
 from app.models.document import Document
 from app.repositories.document_repository import DocumentRepository
 from app.schemas.document_dto import DocumentDTO
 
 
 class DocumentService:
-
     def __init__(self, db: Session):
-
         self.repository = DocumentRepository(db)
+
+    def get_all_documents(self):
+        return self.repository.get_all()
 
     def save_documents(
         self,
         documents: list[DocumentDTO],
         source_id: int,
     ):
-
         added = 0
-
         skipped = 0
 
         for dto in documents:
-
             if self.repository.get_by_url(dto.url):
-
                 skipped += 1
-
                 continue
 
             document = Document(

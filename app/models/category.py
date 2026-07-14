@@ -1,14 +1,10 @@
 from sqlalchemy import String
-
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
-# from sqlalchemy.orm import relationship
-
 from app.db.base import Base
 
 
 class Category(Base):
-
     __tablename__ = "categories"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -23,12 +19,6 @@ class Category(Base):
         String(255),
         nullable=True,
     )
-
-    # documents = relationship(
-    #     "Document",
-    #     secondary="document_categories",
-    #     back_populates="categories",
-    # )
 
     def __repr__(self):
         return f"<Category {self.name}>"

@@ -2,7 +2,6 @@ from abc import ABC
 from abc import abstractmethod
 from typing import ClassVar
 from app.schemas.document_dto import DocumentDTO
-# from bs4 import BeautifulSoup
 from app.core.http_client import HttpClient
 from app.services.rss_service import RSSService
 
@@ -26,13 +25,6 @@ class BaseParser(ABC):
             return await self.execute()
         finally:
             await self.client.close()
-
-
-    # def soup(self, html):
-    #     return BeautifulSoup(
-    #         html,
-    #         "lxml",
-    #     )
 
     async def execute(self) -> list[DocumentDTO]:
         """

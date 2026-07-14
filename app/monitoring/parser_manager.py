@@ -6,10 +6,8 @@ load_parsers()
 
 
 class ParserManager:
-
     @staticmethod
     def get(name: str):
-
         parser = BaseParser.registry.get(name)
 
         if parser is None:
@@ -19,5 +17,4 @@ class ParserManager:
 
     @staticmethod
     def available():
-
         return sorted(BaseParser.registry.keys())

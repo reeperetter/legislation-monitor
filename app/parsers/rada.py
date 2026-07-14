@@ -3,13 +3,11 @@ from app.schemas.document_dto import DocumentDTO
 
 
 class RadaParser(BaseParser):
-
     parser_name = "rada"
 
     rss_url = "https://zakon.rada.gov.ua/laws/main/n.xml"
 
     async def execute(self) -> list[DocumentDTO]:
-
         feed = await self.rss.load(self.rss_url)
 
         print("=" * 60)

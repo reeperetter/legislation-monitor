@@ -1,9 +1,7 @@
 from __future__ import annotations
-
 from datetime import datetime
 from uuid import UUID
 from uuid import uuid4
-
 from sqlalchemy import DateTime
 from sqlalchemy import func
 from sqlalchemy.orm import Mapped
@@ -11,7 +9,6 @@ from sqlalchemy.orm import mapped_column
 
 
 class BaseModel:
-
     """
     Базова модель.
 

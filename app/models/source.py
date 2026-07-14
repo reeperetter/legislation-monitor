@@ -1,19 +1,15 @@
 from datetime import datetime
-
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Integer
 from sqlalchemy import String
-
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
-
 from app.db.base import Base
 
 
 class Source(Base):
-
     __tablename__ = "sources"
 
     id: Mapped[int] = mapped_column(primary_key=True)

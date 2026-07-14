@@ -1,17 +1,14 @@
 from sqlalchemy.orm import Session
-
 from app.models.source import Source
 from app.repositories.base import BaseRepository
+from datetime import datetime
 
 
 class SourceRepository(BaseRepository):
-
     def __init__(self, db: Session):
-
         super().__init__(db)
 
     def get_all(self):
-
         return (
             self.db.query(Source)
             .order_by(Source.name)
@@ -19,7 +16,6 @@ class SourceRepository(BaseRepository):
         )
 
     def get(self, source_id: int):
-
         return (
             self.db.query(Source)
             .filter(Source.id == source_id)
@@ -27,7 +23,6 @@ class SourceRepository(BaseRepository):
         )
 
     def get_by_name(self, name: str):
-
         return (
             self.db.query(Source)
             .filter(Source.name == name)
@@ -35,7 +30,6 @@ class SourceRepository(BaseRepository):
         )
 
     def get_by_parser(self, parser_name: str):
-
         return (
             self.db.query(Source)
             .filter(Source.parser_name == parser_name)
@@ -64,3 +58,36 @@ class SourceRepository(BaseRepository):
         )
 
         return self.add(source)
+
+    def update_status(
+        self,
+        source_id: int,
+        status: str,
+    ):
+        source = self.get(source_id)
+
+        if source is None:
+            return
+
+        source.status = status
+        source.last_check = datetime.utcnow()
+
+        self.db.commit()
+
+
+    def mark_success(
+        self,
+        source_id: int,
+    ):
+        source = self.get(source_id)
+
+        if source is None:
+            return
+
+        now = datetime.utcnow()
+
+        source.status = "ok"
+        source.last_check = now
+        source.last_success = now
+
+        self.db.commit()

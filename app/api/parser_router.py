@@ -1,17 +1,34 @@
 from fastapi import APIRouter
+from fastapi import HTTPException
 
-from app.parsers.kmu_parser import KMUParser
+from app.monitoring.parser_manager import ParserManager
 
-router = APIRouter()
+router = APIRouter(prefix="/parser", tags=["Parser"])
 
 
-@router.get("/parser/test")
-async def parser_test():
-
-    parser = KMUParser()
-
-    soup = await parser.parse()
+@router.get("/available")
+async def available_parsers():
 
     return {
-        "title": soup.title.text,
+        "parsers": ParserManager.available()
+    }
+
+
+@router.get("/run/{parser_name}")
+async def run_parser(parser_name: str):
+
+    try:
+        parser = ParserManager.get(parser_name)
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=404,
+            detail=str(e),
+        )
+
+    result = await parser.run()
+
+    return {
+        "parser": parser_name,
+        "result": result,
     }

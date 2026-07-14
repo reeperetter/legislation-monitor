@@ -8,7 +8,7 @@ class RadaParser(BaseParser):
 
     rss_url = "https://zakon.rada.gov.ua/laws/main/rss"
 
-    async def execute(self):
+    async def execute(self) -> list[DocumentDTO]:
 
         feed = await self.rss.load(self.rss_url)
 

@@ -16,6 +16,7 @@ class SourceService:
         self,
         name: str,
         base_url: str,
+        parser_name: str,
     ):
 
         exists = self.repository.get_by_name(name)
@@ -26,7 +27,7 @@ class SourceService:
                 "Source already exists."
             )
 
-        return self.repository.create(
-            name=name,
-            base_url=base_url,
-        )
+        return self.repository.create(name=name, base_url=base_url, parser_name=parser_name,)
+
+    def get_by_parser(self, parser_name: str):
+       return self.repository.get_by_parser(parser_name)

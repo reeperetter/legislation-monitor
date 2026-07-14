@@ -34,17 +34,33 @@ class SourceRepository(BaseRepository):
             .first()
         )
 
+    def get_by_parser(self, parser_name: str):
+
+        return (
+            self.db.query(Source)
+            .filter(Source.parser_name == parser_name)
+            .first()
+        )
+
     def create(
         self,
         name: str,
         base_url: str,
+        parser_name: str,
         enabled: bool = True,
+        priority: int = 100,
+        check_interval: int = 60,
+        status: str = "idle",
     ):
 
         source = Source(
             name=name,
             base_url=base_url,
+            parser_name=parser_name,
             enabled=enabled,
+            priority=priority,
+            check_interval=check_interval,
+            status=status,
         )
 
         return self.add(source)

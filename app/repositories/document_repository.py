@@ -2,33 +2,12 @@ from sqlalchemy.orm import Session
 
 from app.models.document import Document
 
-from app.repositories.base import BaseRepository
 
-
-class DocumentRepository(BaseRepository):
+class DocumentRepository:
 
     def __init__(self, db: Session):
 
-        super().__init__(db)
-
-    def get_all(self):
-
-        return (
-            self.db.query(Document)
-            .order_by(
-                Document.document_date.desc(),
-                Document.id.desc(),
-            )
-            .all()
-        )
-
-    def get(self, document_id: int):
-
-        return (
-            self.db.query(Document)
-            .filter(Document.id == document_id)
-            .first()
-        )
+        self.db = db
 
     def get_by_url(self, url: str):
 
@@ -38,8 +17,20 @@ class DocumentRepository(BaseRepository):
             .first()
         )
 
-    def create(self, **kwargs):
+    def get_all(self):
 
-        document = Document(**kwargs)
+        return (
+            self.db.query(Document)
+            .order_by(Document.document_date.desc())
+            .all()
+        )
 
-        return self.add(document)
+    def create(self, document: Document):
+
+        self.db.add(document)
+
+        self.db.commit()
+
+        self.db.refresh(document)
+
+        return document

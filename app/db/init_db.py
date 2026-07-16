@@ -1,22 +1,19 @@
-from app.db.base import Base
-from app.db.session import engine
-from app.models.document import Document
+from sqlalchemy.orm import Session
 
-# Імпорт моделей ОБОВ'ЯЗКОВИЙ,
-# щоб SQLAlchemy "побачила" таблиці.
-
-from app.models.user import User
-from app.models.role import Role
-
-from app.models.source import Source
-from app.models.keyword import Keyword
-from app.models.category import Category
+from app.db.session import SessionLocal
+from app.db.seed import seed_sources
 
 
 def init_database() -> None:
     """
-    База даних тепер керується Alembic.
-
-    Тут поки нічого не потрібно.
+    Виконує початкове заповнення бази даних.
+    Структура БД створюється Alembic.
     """
-    return
+
+    db: Session = SessionLocal()
+
+    try:
+        seed_sources(db)
+
+    finally:
+        db.close()

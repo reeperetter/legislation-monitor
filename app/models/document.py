@@ -1,8 +1,6 @@
 from datetime import date
-from sqlalchemy import Boolean, Date, ForeignKey, Integer, String, Text, Column
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, Date, ForeignKey, Integer, String, Text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 
 
@@ -69,6 +67,11 @@ class Document(Base):
         back_populates="documents",
     )
 
-    def __repr__(self):
+    categories = relationship(
+        "Category",
+        secondary="document_categories",
+        back_populates="documents",
+    )
 
+    def __repr__(self):
         return f"<Document {self.title}>"

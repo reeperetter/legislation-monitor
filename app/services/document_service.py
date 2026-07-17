@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-
 from app.models.document import Document
 from app.repositories.document_repository import DocumentRepository
 from app.schemas.document_dto import DocumentDTO
@@ -16,17 +15,11 @@ class DocumentService:
 
         return self.repository.get_all()
 
-    def save_documents(
-        self,
-        documents: list[DocumentDTO],
-        source_id: int,
-    ):
-
+    def save_documents(self, documents: list[DocumentDTO], source_id: int):
         added = 0
         skipped = 0
 
         for dto in documents:
-
             if self.repository.get_by_url(dto.url):
                 skipped += 1
                 continue
@@ -65,6 +58,7 @@ class DocumentService:
                     document.document_number = analysis.get("document_number")
                     document.document_date = analysis.get("document_date")
                     document.document_type = analysis.get("document_type")
+                    document.importance = result.get("importance", 0)
                     document.processed = True
                     self.repository.commit()
                     processed += 1

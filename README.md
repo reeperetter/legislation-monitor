@@ -1,2 +1,3 @@
-В кінці видалити папку parsers
-Але треба перевірити
+запуск сервера:
+uv run uvicorn app.main:app --reload
+

@@ -1,12 +1,14 @@
 from sqlalchemy.orm import Session
 from app.models.document import Document
 from app.repositories.document_repository import DocumentRepository
+from app.services.document_processor import DocumentProcessor
 from app.schemas.document_dto import DocumentDTO
 
 
 class DocumentService:
     def __init__(self, db: Session):
         self.repository = DocumentRepository(db)
+        self.processor = DocumentProcessor()
 
     def get_all_documents(self):
         return self.repository.get_all()
@@ -43,4 +45,34 @@ class DocumentService:
         return {
             "added": added,
             "skipped": skipped,
+        }
+
+
+    async def process_documents(self, limit: int = 20):
+        documents = self.repository.get_unprocessed(limit)
+        processed = 0
+
+        try:
+            for document in documents:
+                try:
+                    content = await self.processor.load_content(
+                        document.url,
+                    )
+
+                    self.repository.save_content(
+                        document,
+                        content,
+                    )
+
+                    processed += 1
+
+                except Exception as e:
+                    print(f"Error processing {document.url}: {e}")
+
+        finally:
+            await self.processor.close()
+
+        return {
+            "processed": processed,
+            "total": len(documents),
         }

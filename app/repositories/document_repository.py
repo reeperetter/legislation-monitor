@@ -26,3 +26,20 @@ class DocumentRepository:
         self.db.refresh(document)
 
         return document
+
+
+    def get_unprocessed(self, limit: int = 20):
+        return (
+            self.db.query(Document)
+            .filter(Document.processed.is_(False))
+            .order_by(Document.id)
+            .limit(limit)
+            .all()
+        )
+
+
+    def save_content(self, document: Document, content: str):
+        document.content = content
+        document.processed = True
+
+        self.db.commit()

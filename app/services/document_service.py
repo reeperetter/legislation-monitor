@@ -58,13 +58,12 @@ class DocumentService:
                         summary=document.summary or "",
                     )
 
-                    document.content = result["content"]
-                    analysis = result["analysis"]
+                    document.content = result.content
 
-                    document.document_number = analysis.get("document_number")
-                    document.document_date = analysis.get("document_date")
-                    document.document_type = analysis.get("document_type")
-                    document.importance = result.get("importance", 0)
+                    document.document_number = result.document_number
+                    document.document_date = result.document_date
+                    document.document_type = result.document_type
+                    document.importance = result.importance
                     document.processed = True
                     self.repository.commit()
                     processed += 1

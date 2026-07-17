@@ -1,11 +1,17 @@
-from sqlalchemy import Column
 from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
+from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 
 
 class DocumentCategory(Base):
     __tablename__ = "document_categories"
 
-    document_id = Column(Integer, ForeignKey("documents.id"), primary_key=True)
-    category_id = Column(Integer, ForeignKey("categories.id"), primary_key=True)
+    document_id: Mapped[int] = mapped_column(
+        ForeignKey("documents.id"),
+        primary_key=True,
+    )
+
+    category_id: Mapped[int] = mapped_column(
+        ForeignKey("categories.id"),
+        primary_key=True,
+    )

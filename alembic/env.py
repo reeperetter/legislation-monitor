@@ -1,6 +1,6 @@
 from logging.config import fileConfig
 from app.core.config import settings
-
+from app.models.document_category import DocumentCategory
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 

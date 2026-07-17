@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from app.models.document_category import DocumentCategory
 from app.db.session import SessionLocal
 from app.db.seed import seed_sources
 

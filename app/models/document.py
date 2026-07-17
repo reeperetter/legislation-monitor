@@ -1,10 +1,5 @@
 from datetime import date
-from sqlalchemy import Boolean
-from sqlalchemy import Date
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import Text
+from sqlalchemy import Boolean, Date, ForeignKey, Integer, String, Text, Column
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
@@ -19,6 +14,11 @@ class Document(Base):
     title: Mapped[str] = mapped_column(
         String(1000),
         nullable=False,
+    )
+
+    document_type: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
     )
 
     document_number: Mapped[str | None] = mapped_column(

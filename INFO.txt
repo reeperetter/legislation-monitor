@@ -1,0 +1,5 @@
+запуск сервера:
+uv run uvicorn app.main:app --reload
+
+
+Чи пусті в папці providers та parsers/sources ?

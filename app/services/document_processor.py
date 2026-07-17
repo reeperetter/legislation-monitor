@@ -2,6 +2,7 @@ from app.core.http_client import HttpClient
 from app.services.content_extractor import ContentExtractor
 from app.services.document_analyzer import DocumentAnalyzer
 from app.services.importance_service import ImportanceService
+from app.services.category_service import CategoryService
 
 
 class DocumentProcessor:
@@ -11,6 +12,7 @@ class DocumentProcessor:
         self.extractor = ContentExtractor()
         self.analyzer = DocumentAnalyzer()
         self.importance = ImportanceService()
+        self.categories = CategoryService()
 
     async def load_content(self, url: str) -> str:
         """
@@ -21,28 +23,25 @@ class DocumentProcessor:
 
         return self.extractor.extract(html)
 
-    async def process(self, url: str) -> dict:
+    async def process(self, url: str, title: str, summary: str) -> dict:
         """
-        Повністю обробляє документ:
-        - завантажує HTML;
-        - витягує текст;
-        - аналізує документ.
+        Повністю обробляє документ
         """
 
         content = await self.load_content(url)
-
-
         analysis = self.analyzer.analyze(content)
+        categories = self.categories.detect(title, summary, content)
 
         importance = self.importance.calculate(
-            title=content[:500],
-            summary=content[:1500],
-            document_type=analysis["document_type"],
+            title=title,
+            summary=summary,
+            document_type=analysis.get("document_type"),
         )
 
         return {
             "content": content,
             "analysis": analysis,
+            "categories": categories,
             "importance": importance,
         }
 

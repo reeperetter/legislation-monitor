@@ -52,9 +52,15 @@ class DocumentService:
         try:
             for document in documents:
                 try:
-                    result = await self.processor.process(document.url)
+                    result = await self.processor.process(
+                        url=document.url,
+                        title=document.title,
+                        summary=document.summary or "",
+                    )
+
                     document.content = result["content"]
                     analysis = result["analysis"]
+
                     document.document_number = analysis.get("document_number")
                     document.document_date = analysis.get("document_date")
                     document.document_type = analysis.get("document_type")

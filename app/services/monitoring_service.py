@@ -46,6 +46,7 @@ class MonitoringService:
                 result = await self.run_parser(source.parser_name)
 
             except Exception as e:
+                self.db.rollback()
                 logger.exception(f"Parser '{source.parser_name}' failed.")
                 result = {
                     "source": source.name,

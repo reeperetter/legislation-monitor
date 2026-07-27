@@ -50,8 +50,7 @@ class DocumentService:
 
             self.repository.commit()
 
-        except Exception as e:
-            print(f"SAVE_DOCUMENTS EXCEPTION: {e}")
+        except Exception:
             self.repository.rollback()
             raise
 

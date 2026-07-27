@@ -1,6 +1,9 @@
 запуск сервера:
 uv run uvicorn app.main:app --reload
 
+запуск sqlite:
+sqlite legislation.db
+
 
 ====================TODO====================
 

@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
 
-from app.core.logger import logger
 from app.models.document import Document
 from app.repositories.category_repository import CategoryRepository
 from app.repositories.document_repository import DocumentRepository
@@ -14,10 +13,6 @@ class DocumentService:
         self.repository = DocumentRepository(db)
         self.category_repository = CategoryRepository(db)
         self.processor = DocumentProcessor()
-        from app.repositories.document_category_repository import (
-            DocumentCategoryRepository,
-        )
-        self.document_category_repository = DocumentCategoryRepository(db)
 
     def get_all_documents(self):
         return self.repository.get_all()
@@ -30,26 +25,35 @@ class DocumentService:
         added = 0
         skipped = 0
 
-        for dto in documents:
+        try:
+            for dto in documents:
 
-            if self.repository.get_by_url(dto.url):
-                skipped += 1
-                continue
+                if self.repository.get_by_url(dto.url):
+                    skipped += 1
+                    continue
 
-            document = Document(
-                title=dto.title,
-                document_number=dto.document_number,
-                document_date=dto.document_date,
-                url=dto.url,
-                summary=dto.summary,
-                content=None,
-                importance=0,
-                processed=False,
-                source_id=source_id,
-            )
+                document = Document(
+                    title=dto.title,
+                    document_number=dto.document_number,
+                    document_date=dto.document_date,
+                    url=dto.url,
+                    summary=dto.summary,
+                    content=None,
+                    importance=0,
+                    processed=False,
+                    source_id=source_id,
+                )
 
-            self.repository.create(document)
-            added += 1
+                self.repository.create(document)
+
+                added += 1
+
+            self.repository.commit()
+
+        except Exception as e:
+            print(f"SAVE_DOCUMENTS EXCEPTION: {e}")
+            self.repository.rollback()
+            raise
 
         return {
             "added": added,
@@ -64,11 +68,9 @@ class DocumentService:
         processed = 0
 
         try:
-
             for document in documents:
 
                 try:
-
                     result = await self.processor.process(
                         url=document.url,
                         title=document.title,
@@ -84,28 +86,22 @@ class DocumentService:
 
                     for category_name in result.categories:
 
-                        category = (
-                            self.category_repository.get_by_name(
-                                category_name,
-                            )
+                        category = self.category_repository.get_by_name(
+                            category_name,
                         )
 
                         if category is None:
-                            category = (
-                                self.category_repository.create(
-                                    category_name,
-                                )
+                            category = self.category_repository.create(
+                                category_name,
                             )
 
-                        self.document_category_repository.attach(document, category)
+                        if category not in document.categories:
+                            document.categories.append(category)
 
                     processed += 1
 
-                except Exception:
-                    logger.exception(
-                        "Error processing document: %s",
-                        document.url,
-                    )
+                except Exception as e:
+                    print(f"Error processing {document.url}: {e}")
 
             self.repository.commit()
 

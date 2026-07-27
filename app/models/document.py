@@ -2,6 +2,12 @@ from datetime import date
 from sqlalchemy import Boolean, Date, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
+from app.models.source import Source
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from app.models.category import Category
 
 
 class Document(Base):
@@ -62,12 +68,12 @@ class Document(Base):
         nullable=False,
     )
 
-    source = relationship(
+    source: Mapped["Source"] = relationship(
         "Source",
         back_populates="documents",
     )
 
-    categories = relationship(
+    categories: Mapped[list["Category"]] = relationship(
         "Category",
         secondary="document_categories",
         back_populates="documents",

@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.models.document import Document
@@ -9,13 +9,6 @@ class DocumentRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def get_all(self):
-        return (
-            self.db.query(Document)
-            .order_by(Document.document_date.desc())
-            .all()
-        )
-
     def get_by_url(self, url: str):
         return (
             self.db.query(Document)
@@ -23,12 +16,15 @@ class DocumentRepository:
             .first()
         )
 
-    def create(self, document: Document):
-        self.db.add(document)
-        self.db.commit()
-        self.db.refresh(document)
-
-        return document
+    def get_all(self):
+        return (
+            self.db.query(Document)
+            .order_by(
+                Document.importance.desc(),
+                Document.document_date.desc(),
+            )
+            .all()
+        )
 
     def get_unprocessed(self, limit: int = 20):
         return (
@@ -39,26 +35,37 @@ class DocumentRepository:
             .all()
         )
 
-    def save_content(
-        self,
-        document: Document,
-        content: str,
-    ):
-        document.content = content
-        document.processed = True
+    def search(self, query: str):
 
-        self.db.commit()
+        if not query:
+            return self.get_all()
 
-    def update_analysis(
-        self,
-        document: Document,
-        analysis: dict,
-    ):
-        document.document_number = analysis.get("document_number")
-        document.document_date = analysis.get("document_date")
-        document.document_type = analysis.get("document_type")
+        return (
+            self.db.query(Document)
+            .filter(
+                or_(
+                    Document.title.ilike(f"%{query}%"),
+                    Document.summary.ilike(f"%{query}%"),
+                    Document.content.ilike(f"%{query}%"),
+                )
+            )
+            .order_by(
+                Document.importance.desc(),
+                Document.document_date.desc(),
+            )
+            .all()
+        )
 
-        self.db.commit()
+    def create(self, document: Document):
+        self.db.add(document)
+        self.db.flush()
+        return document
 
     def commit(self):
         self.db.commit()
+
+    def rollback(self):
+        self.db.rollback()
+
+    def refresh(self, document: Document):
+        self.db.refresh(document)

@@ -1,7 +1,10 @@
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from app.models.document import Document
 
 class Category(Base):
     __tablename__ = "categories"
@@ -21,7 +24,7 @@ class Category(Base):
         nullable=True,
     )
 
-    documents = relationship(
+    documents: Mapped[list["Document"]] = relationship(
         "Document",
         secondary="document_categories",
         back_populates="categories",

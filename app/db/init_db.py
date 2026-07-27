@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
-from app.models.document_category import DocumentCategory
+
 from app.db.session import SessionLocal
 from app.db.seed import seed_sources
+from app.services.category_initializer import CategoryInitializer
 
 
 def init_database() -> None:
@@ -14,6 +15,8 @@ def init_database() -> None:
 
     try:
         seed_sources(db)
+
+        CategoryInitializer(db).initialize()
 
     finally:
         db.close()

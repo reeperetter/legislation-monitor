@@ -11,6 +11,10 @@ from app.api.document_router import router as document_router
 from app.api.parser_router import router as parser_router
 from app.api.monitor_router import router as monitor_router
 from app.api.process_router import router as process_router
+from app.api.category_router import router as category_router
+from app.api.search_router import router as search_router
+from app.api.dashboard_router import router as dashboard_router
+from app.api.category_filter_router import router as category_filter_router
 
 
 @asynccontextmanager
@@ -33,6 +37,10 @@ app.include_router(document_router)
 app.include_router(parser_router)
 app.include_router(monitor_router)
 app.include_router(process_router)
+app.include_router(category_router)
+app.include_router(search_router)
+app.include_router(dashboard_router)
+app.include_router(category_filter_router)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 templates = Jinja2Templates(directory="app/templates")

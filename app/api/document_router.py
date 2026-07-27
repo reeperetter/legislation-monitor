@@ -1,27 +1,39 @@
-from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import Request
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
 from app.db.session import get_db
-from app.services.document_service import DocumentService
+from app.repositories.document_repository import DocumentRepository
+from app.models.document import Document
 
-router = APIRouter()
-
-templates = Jinja2Templates(
-    directory="app/templates"
+router = APIRouter(
+    prefix="/documents",
+    tags=["Documents"],
 )
 
-@router.get("/documents")
-def documents(request: Request, db: Session = Depends(get_db),):
-    service = DocumentService(db)
 
-    return templates.TemplateResponse(
-        request=request,
-        name="documents.html",
-        context={
-            "request": request,
-            "documents": service.get_all_documents(),
-            "title": "Documents",
-        },
+@router.get("")
+def get_documents(
+    db: Session = Depends(get_db),
+):
+    repository = DocumentRepository(db)
+    return repository.get_all()
+
+
+@router.get("/{document_id}")
+def get_document(
+    document_id: int,
+    db: Session = Depends(get_db),
+):
+    document = (
+        db.query(Document)
+        .filter(Document.id == document_id)
+        .first()
     )
+
+    if document is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found",
+        )
+
+    return document

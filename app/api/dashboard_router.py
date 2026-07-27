@@ -2,8 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.models.document import Document
-from app.models.source import Source
+from app.services.dashboard_service import DashboardService
 
 router = APIRouter(
     prefix="/dashboard",
@@ -12,13 +11,7 @@ router = APIRouter(
 
 
 @router.get("/stats")
-def dashboard_stats(
+def stats(
     db: Session = Depends(get_db),
 ):
-    return {
-        "documents": db.query(Document).count(),
-        "processed": db.query(Document)
-        .filter(Document.processed.is_(True))
-        .count(),
-        "sources": db.query(Source).count(),
-    }
+    return DashboardService(db).statistics()

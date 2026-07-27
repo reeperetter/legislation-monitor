@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.repositories.category_repository import CategoryRepository
+from app.services.category_reader_service import CategoryReaderService
+
 
 router = APIRouter(
     prefix="/categories",
@@ -14,12 +15,6 @@ router = APIRouter(
 def get_categories(
     db: Session = Depends(get_db),
 ):
-    repository = CategoryRepository(db)
+    service = CategoryReaderService(db)
 
-    categories = (
-        db.query(repository.model)
-        .order_by(repository.model.name)
-        .all()
-    )
-
-    return categories
+    return service.get_all()

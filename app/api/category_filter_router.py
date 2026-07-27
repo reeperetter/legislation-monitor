@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.models.category import Category
+from app.services.category_filter_service import (
+    CategoryFilterService,
+)
 
 router = APIRouter(
     prefix="/category",
@@ -11,17 +13,10 @@ router = APIRouter(
 
 
 @router.get("/{name}")
-def documents_by_category(
+def documents(
     name: str,
     db: Session = Depends(get_db),
 ):
-    category = (
-        db.query(Category)
-        .filter(Category.name == name)
-        .first()
-    )
+    service = CategoryFilterService(db)
 
-    if category is None:
-        return []
-
-    return category.documents
+    return service.get_documents(name)

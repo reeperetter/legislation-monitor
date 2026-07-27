@@ -3,7 +3,7 @@ from app.schemas.processed_document_dto import ProcessedDocumentDTO
 from app.services.content_extractor import ContentExtractor
 from app.services.document_analyzer import DocumentAnalyzer
 from app.services.importance_service import ImportanceService
-from app.services.category_service import CategoryService
+from app.services.category_detector import CategoryDetector
 
 
 class DocumentProcessor:
@@ -13,7 +13,7 @@ class DocumentProcessor:
         self.extractor = ContentExtractor()
         self.analyzer = DocumentAnalyzer()
         self.importance = ImportanceService()
-        self.categories = CategoryService()
+        self.categories = CategoryDetector()
 
 
     async def load_content(self, url: str) -> str:

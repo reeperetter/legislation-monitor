@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.repositories.document_repository import DocumentRepository
+from app.services.search_service import SearchService
 
 router = APIRouter(
     prefix="/search",
@@ -11,10 +11,10 @@ router = APIRouter(
 
 
 @router.get("")
-def search_documents(
+def search(
     q: str = "",
     db: Session = Depends(get_db),
 ):
-    repository = DocumentRepository(db)
+    service = SearchService(db)
 
-    return repository.search(q)
+    return service.search(q)

@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.repositories.document_repository import DocumentRepository
-from app.models.document import Document
+from app.services.document_reader_service import (
+    DocumentReaderService,
+)
 
 router = APIRouter(
     prefix="/documents",
@@ -15,8 +16,9 @@ router = APIRouter(
 def get_documents(
     db: Session = Depends(get_db),
 ):
-    repository = DocumentRepository(db)
-    return repository.get_all()
+    service = DocumentReaderService(db)
+
+    return service.get_all()
 
 
 @router.get("/{document_id}")
@@ -24,10 +26,10 @@ def get_document(
     document_id: int,
     db: Session = Depends(get_db),
 ):
-    document = (
-        db.query(Document)
-        .filter(Document.id == document_id)
-        .first()
+    service = DocumentReaderService(db)
+
+    document = service.get_by_id(
+        document_id,
     )
 
     if document is None:

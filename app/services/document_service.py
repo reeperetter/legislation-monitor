@@ -14,6 +14,10 @@ class DocumentService:
         self.repository = DocumentRepository(db)
         self.category_repository = CategoryRepository(db)
         self.processor = DocumentProcessor()
+        from app.repositories.document_category_repository import (
+            DocumentCategoryRepository,
+        )
+        self.document_category_repository = DocumentCategoryRepository(db)
 
     def get_all_documents(self):
         return self.repository.get_all()
@@ -93,8 +97,7 @@ class DocumentService:
                                 )
                             )
 
-                        if category not in document.categories:
-                            document.categories.append(category)
+                        self.document_category_repository.attach(document, category)
 
                     processed += 1
 
